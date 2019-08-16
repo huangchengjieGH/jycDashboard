@@ -6,8 +6,10 @@
             <el-select placeholder="根据支部搜索" @change="getMemberList" :clearable="true" v-model="search.classifyId">
                 <el-option v-for="branch in branchList" :label="branch.name" :value="branch.id"></el-option>
             </el-select>
+            <el-button @click="publishQuarterTap()" class="mlr-sm" size="small" type="primary">发布季度排行榜</el-button>
+            <el-button @click="publishYearTap()" class="mlr-sm" size="small" type="primary">发布年度排行榜</el-button>
         </header>
-        <my-table :data="memberList" :config="tableConfig">
+        <my-table :data="memberList" :config="tableConfig" @on-name="onNameTap">
             <div slot="operating" slot-scope="member">
                 <el-button @click="prevResetPassword(member.item)" size="small" type="info">重置密码</el-button>
                 <el-button @click="prevShowEditModal(member.item)" size="small" type="success">编辑</el-button>
@@ -19,7 +21,7 @@
         <el-dialog
                 :append-to-body="true"
                 :visible.sync="showEditModal">
-            <div class="p-sm">
+            <div class="p-sm" v-if="operateStatus==0">
                 <div class="edit-modal-item">
                     <span class="plr-sm">头像</span>
                     <div class="w-5">
@@ -66,6 +68,25 @@
                     </div>
                 </div>
             </div>
+
+            <div v-if="operateStatus==1">
+                <div class="edit-modal-item">
+                    <span class="plr-sm">年份</span>
+                    <el-input v-model="year" class="w-5"></el-input>
+                </div>
+            </div>
+
+            <div v-if="operateStatus==2">
+                <div class="edit-modal-item">
+                    <span class="plr-sm">年份</span>
+                    <el-input v-model="year" class="w-5" placeholder="如：2019"></el-input>
+                </div>
+                <div class="edit-modal-item">
+                    <span class="plr-sm">季度</span>
+                    <el-input v-model="quarter" class="w-5"  placeholder="如：1"></el-input>
+                </div>
+            </div>
+
             <div slot="footer" class="text-center">
                 <el-button @click="commitMemberItem()" type="primary">保存</el-button>
             </div>
@@ -94,7 +115,8 @@
                     },
                     {
                         label: '姓名',
-                        property: 'name'
+                        property: 'name',
+                        color: '#409eff'
                     },
                     {
                         label: '账号',
@@ -116,7 +138,10 @@
                         label: '操作',
                         type: 'operating'
                     }
-                ]
+                ],
+                operateStatus: 0,
+                quarter: '',
+                year: ''
             }
         },
 
@@ -146,6 +171,18 @@
 
             commitMemberItem() {
                 const that = this;
+                if (that.operateStatus === 0) {
+                    that.addMember();
+                }
+                if (that.operateStatus === 1) {
+                    that.publishYear();
+                }
+                if (that.operateStatus === 2) {
+                    that.publishQuarter();
+                }
+            },
+            addMember() {
+                const that = this
                 let member = new Member(that.memberItem);
                 let thenObj = null;
                 if (member.id) {
@@ -158,7 +195,6 @@
                     that.getMemberList();
                 });
             },
-
             imgUpload(res) {
                 console.log('res')
                 console.log(res.data)
@@ -181,6 +217,7 @@
                 obj.classify = obj.classify || {};
                 this.memberItem = obj;
                 this.showEditModal = true;
+                this.operateStatus = 0;
             },
             filterMemberList(list) {
                 list.map(item => {
@@ -213,7 +250,54 @@
                     }
                 });
             },
+            publishQuarter() {
+                const that = this
+                var data = {
+                    year: that.year,
+                    quarter: that.quarter
+                }
+                if (that.year && that.quarter) {
+                    Member.prototype.publishQuatar(data).then(res => {
+                        let list = res.data.data || [];
+                        that.$message({
+                            type: 'info',
+                            message: '发布成功'
+                        });
+                        that.showEditModal = false;
+                    });
+                }
+            },
+            publishYear() {
+                const that = this
+                var data = {
+                    year: that.year
+                };
+                if (that.year) {
+                    Member.prototype.publishYear(data).then(res => {
+                        let list = res.data.data || [];
+                        that.$message({
+                            type: 'info',
+                            message: '发布成功'
+                        });
+                        that.showEditModal = false;
+                    });
+                }
+            },
+            publishQuarterTap(e) {
+                const that = this
+                that.operateStatus = 2;
+                that.showEditModal = true;
+            },
+            publishYearTap(e) {
+                const that = this
+                this.operateStatus = 1;
+                that.showEditModal = true;
 
+            },
+            onNameTap(obj) {
+                console.log(obj)
+                this.$router.push('/member/detail/?memberId=' + obj.id);
+            },
             getMemberList() {
                 const that = this;
                 let search = {...that.search};

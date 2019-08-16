@@ -27,6 +27,14 @@ export const otherRouter = {
             component: resolve => {
                 require(['./jyc/article/edit.vue'], resolve);
             }
+        },
+        {
+            path: 'member/detail',
+            title: '详情',
+            name: 'member-detail',
+            component: resolve => {
+                require(['./jyc/member/detail.vue'], resolve);
+            }
         }
     ]
 };
