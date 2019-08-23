@@ -10,6 +10,15 @@
                 <el-button @click="deleteBranchItem(branch.item,branch.index)" size="small" type="danger">删除</el-button>
             </div>
         </my-table>
+        <div v-if="branchList.length" class="text-center p-sm">
+            <el-pagination
+                    @current-change="getBranchList(false)"
+                    :current-page.sync="search.page"
+                    :page-size="search.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="branchSum">
+            </el-pagination>
+        </div>
 
         <!--编辑套餐-->
         <el-dialog
@@ -36,10 +45,19 @@
         name: "branch-list",
         data() {
             return {
+                search: {
+                    page: 1,
+                    pageSize: 10
+                },
                 showEditModal: false,
                 branchItem: {},
                 branchList: [],
+                branchSum: 0,
                 tableConfig: [
+                    {
+                        label: '序号',
+                        property: 'id'
+                    },
                     {
                         label: '名称',
                         property: 'name'
@@ -97,9 +115,10 @@
 
             getBranchList() {
                 const that = this;
-                Branch.prototype.getList().then(res => {
+                Branch.prototype.getList(that.search).then(res => {
                     let list = res.data.data || [];
                     that.branchList.splice(0, that.branchList.length, ...list);
+                    that.branchSum = res.data.extra.count || list.length;
                 });
             }
         }

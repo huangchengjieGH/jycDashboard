@@ -10,6 +10,15 @@
                 <el-button @click="deletePointsItem(points.item,points.index)" size="small" type="danger">删除</el-button>
             </div>
         </my-table>
+        <div v-if="pointsList.length" class="text-center p-sm">
+            <el-pagination
+                    @current-change="getPointsList(false)"
+                    :current-page.sync="search.page"
+                    :page-size="search.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="pointsNum">
+            </el-pagination>
+        </div>
 
         <!--编辑套餐-->
         <el-dialog
@@ -52,11 +61,20 @@
         name: "points-list",
         data() {
             return {
+                search: {
+                    page: 1,
+                    pageSize: 10
+                },
                 showEditModal: false,
                 pointsItem: {classify: {}},
                 pointsList: [],
                 classifyList: [],
+                pointsNum: 0,
                 tableConfig: [
+                    {
+                        label: '序号 ',
+                        property: 'id'
+                    },
                     {
                         label: '名称',
                         property: 'name'
@@ -133,10 +151,11 @@
 
             getPointsList() {
                 const that = this;
-                Points.prototype.getList().then(res => {
+                Points.prototype.getList(that.search).then(res => {
                     let list = res.data.data || [];
                     that.filterPointsList(list);
                     that.pointsList.splice(0, that.pointsList.length, ...list);
+                    that.pointsNum = res.data.extra.count || list.length;
                 });
             },
 

@@ -11,7 +11,15 @@
                 </el-button>
             </div>
         </my-table>
-
+        <div v-if="classifyList.length" class="text-center p-sm">
+            <el-pagination
+                    @current-change="getClassifyList(false)"
+                    :current-page.sync="search.page"
+                    :page-size="search.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="classifyNum">
+            </el-pagination>
+        </div>
         <!--编辑套餐-->
         <el-dialog
                 :append-to-body="true"
@@ -44,10 +52,19 @@
         name: "classify-list",
         data() {
             return {
+                search: {
+                    page: 1,
+                    pageSize: 10
+                },
                 showEditModal: false,
                 classifyItem: {type: 1},
                 classifyList: [],
+                classifyNum: 0,
                 tableConfig: [
+                    {
+                        label: '序号',
+                        property: 'id'
+                    },
                     {
                         label: '名称',
                         property: 'name'
@@ -115,10 +132,11 @@
 
             getClassifyList() {
                 const that = this;
-                Classify.prototype.getList().then(res => {
+                Classify.prototype.getList(that.search).then(res => {
                     let list = res.data.data || [];
                     that.filterClassifyList(list);
                     that.classifyList.splice(0, that.classifyList.length, ...list);
+                    that.classifyNum = res.data.extra.count || list.length;
                 });
             }
         }

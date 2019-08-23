@@ -16,7 +16,15 @@
                 <el-button @click="deleteMemberItem(member.item,member.index)" size="small" type="danger">删除</el-button>
             </div>
         </my-table>
-
+        <div v-if="memberList.length" class="text-center p-sm">
+            <el-pagination
+                    @current-change="getMemberList(false)"
+                    :current-page.sync="search.page"
+                    :page-size="search.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="memberNum">
+            </el-pagination>
+        </div>
         <!--编辑套餐-->
         <el-dialog
                 :append-to-body="true"
@@ -57,6 +65,8 @@
                         <el-option :value="1" label="中共党员"></el-option>
                         <el-option :value="3" label="共青团员"></el-option>
                         <el-option :value="4" label="群众"></el-option>
+                        <el-option :value="5" label="中共预备党员"></el-option>
+                        <el-option :value="6" label="入党积极分子"></el-option>
                     </el-select>
                 </div>
                 <div class="edit-modal-item">
@@ -141,7 +151,8 @@
                 ],
                 operateStatus: 0,
                 quarter: '',
-                year: ''
+                year: '',
+                memberNum: 0
             }
         },
 
@@ -232,6 +243,12 @@
                         case 3:
                             item.politicalName = '共青团员';
                             break;
+                        case 5:
+                            item.politicalName = '中共预备党员';
+                            break;
+                        case 6:
+                            item.politicalName = '入党积极分子';
+                            break;
                         case 4:
                             item.politicalName = '群众';
                             break;
@@ -308,6 +325,7 @@
                     let list = res.data.data || [];
                     that.filterMemberList(list);
                     that.memberList.splice(0, that.memberList.length, ...list);
+                    that.memberNum = res.data.extra.count || list.length;
                 });
             },
 
