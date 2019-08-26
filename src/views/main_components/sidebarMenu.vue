@@ -6,12 +6,12 @@
 <template>
   <Menu ref="sideMenu" :active-name="$route.name" :open-names="openedSubmenuArr" :theme="$store.state.menuTheme" width="auto" @on-select="changeMenu">
     <div v-for="item in menuList" :key="item.path">
-      <MenuItem v-if="item.children.length<=1" :name="item.children[0].name">
+      <MenuItem v-if="item.children.length<=1 && item.show" :name="item.children[0].name">
         <Icon :type="item.icon" :size="iconSize"></Icon>
         <span class="layout-text">{{ itemTitle(item) }}</span>
       </MenuItem>
 
-      <Submenu v-if="item.children.length>1" :name="item.name">
+      <Submenu v-if="item.children.length>1 && item.show" :name="item.name">
         <template slot="title">
           <Icon :type="item.icon" :size="iconSize"></Icon>
           <span class="layout-text">{{ itemTitle(item) }}</span>

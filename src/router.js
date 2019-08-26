@@ -17,7 +17,7 @@ export const loginRouter = {
 export const otherRouter = {
     path: '/',
     name: 'otherRouter',
-    redirect: '/article/list',
+    redirect: '/my/list',
     component: Main,
     children: [
         {
@@ -46,6 +46,8 @@ export const appRouter = [
         path: '/classify',
         icon: 'android-folder',
         name: 'classify',
+        role: 'admin',
+        show: true,
         title: '分类管理',
         component: Main,
         children: [
@@ -63,6 +65,8 @@ export const appRouter = [
         path: '/points',
         icon: 'android-folder',
         name: 'points',
+        role: 'admin',
+        show: true,
         title: '积分项管理',
         component: Main,
         children: [
@@ -80,6 +84,8 @@ export const appRouter = [
         path: '/branch',
         icon: 'android-folder',
         name: 'branch',
+        role: 'admin',
+        show: true,
         title: '支部管理',
         component: Main,
         children: [
@@ -97,6 +103,8 @@ export const appRouter = [
         path: '/member',
         icon: 'android-folder',
         name: 'member',
+        role: 'admin',
+        show: true,
         title: '会员管理',
         component: Main,
         children: [
@@ -111,9 +119,30 @@ export const appRouter = [
         ]
     },
     {
+        path: '/staff',
+        icon: 'android-folder',
+        name: 'staff',
+        role: 'member',
+        show: true,
+        title: '会员管理',
+        component: Main,
+        children: [
+            {
+                path: 'list',
+                title: '会员列表',
+                name: 'staff-list',
+                component: resolve => {
+                    require(['./jyc/staff/list.vue'], resolve);
+                }
+            }
+        ]
+    },
+    {
         path: '/article',
         icon: 'android-folder',
         name: 'article',
+        role: 'admin',
+        show: true,
         title: '文章管理',
         component: Main,
         children: [
@@ -123,6 +152,26 @@ export const appRouter = [
                 name: 'article-list',
                 component: resolve => {
                     require(['./jyc/article/list.vue'], resolve);
+                }
+            }
+        ]
+    },
+    {
+        path: '/my',
+        icon: 'android-folder',
+        name: 'my',
+        title: '账号信息',
+        component: Main,
+        role: 'share',
+        show: true,
+        children: [
+            {
+                path: 'list',
+                title: '账号信息',
+                name: 'my-list',
+                show: true,
+                component: resolve => {
+                    require(['./jyc/my/list.vue'], resolve);
                 }
             }
         ]
