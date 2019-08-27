@@ -121,6 +121,11 @@
                 branchList: [],
                 tableConfig: [
                     {
+                        label: '序号',
+                        index: 'rowIndex',
+                        property: 'base'
+                    },
+                    {
                         label: '头像',
                         img: 'headImgUrl'
                     },
@@ -233,11 +238,13 @@
                 this.operateStatus = 0;
             },
             filterMemberList(list) {
+                const that = this
                 list.map(item => {
                     item.user = item.user || {};
                     item.username = item.user.username;
                     item.roleName = '会员';
                     item.politicalName = '';
+                    item.base = (that.search.page - 1) * that.search.pageSize
                     switch (item.politicalStatus) {
                         case 1:
                             item.politicalName = '中共党员';
