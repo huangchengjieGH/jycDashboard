@@ -93,7 +93,7 @@
                 </div>
                 <div class="edit-modal-item">
                     <span class="plr-sm">季度</span>
-                    <el-input v-model="quarter" class="w-5"  placeholder="如：1"></el-input>
+                    <el-input v-model="quarter" class="w-5" placeholder="如：1"></el-input>
                 </div>
             </div>
 
@@ -113,12 +113,20 @@
         name: "member-list",
         data() {
             return {
-                search: {},
+                search: {
+                    page: 1,
+                    pageSize: 5
+                },
                 showEditModal: false,
                 memberItem: {classify: {}},
                 memberList: [],
                 branchList: [],
                 tableConfig: [
+                    {
+                        label: '序号',
+                        index: 'rowIndex',
+                        property: 'base'
+                    },
                     {
                         label: '头像',
                         img: 'headImgUrl'
@@ -231,11 +239,13 @@
                 this.operateStatus = 0;
             },
             filterMemberList(list) {
+                const that = this
                 list.map(item => {
                     item.user = item.user || {};
                     item.username = item.user.username;
                     item.roleName = '会员';
                     item.politicalName = '';
+                    item.base = (that.search.page - 1) * that.search.pageSize
                     switch (item.politicalStatus) {
                         case 1:
                             item.politicalName = '中共党员';

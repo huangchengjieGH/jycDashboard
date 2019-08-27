@@ -11,7 +11,8 @@
                 <div style="display:flex;align-items: center;justify-content: center;position: relative;">
                     <span class="hide-pc table-td_label">{{item.label}}</span>
                     <img v-if="item.img" :src="getRealValue(row,item.img)"/>
-                    <span v-if="!item.color">{{getRealValue(row,item.property)}}</span>
+                    <span v-if="item.index">{{getValue(rowIndex,row,item.property)}}</span>
+                    <span v-else-if="!item.color">{{getRealValue(row,item.property)}}</span>
                     <span v-else :style="{color:item.color}" @click="choosePropertyTap(row)">{{getRealValue(row,item.property)}}</span>
                     <img v-if="item.iconUrl" :src="item.iconUrl" @click="iconTap(row)"
                          style="    height: 15px;width: 15px;position: absolute;margin-left: 23px;"/>
@@ -83,6 +84,17 @@
             },
             iconTap(obj) {
                 this.$emit('on-icon', obj);
+            },
+            getValue(rowIndex, obj, property) {
+                let value = obj;
+                let propertyList = property.split('.');
+                propertyList.forEach(name => {
+                    if (value) {
+                        value = value[name];
+                    }
+                });
+                var temp = value + rowIndex + 1
+                return temp
             },
             getRealValue(obj, property = '') {
                 let value = obj;
