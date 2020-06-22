@@ -119,6 +119,25 @@ export const appRouter = [
         ]
     },
     {
+        path: '/scoreDetail',
+        icon: 'android-folder',
+        name: 'scoreDetail',
+        role: 'admin',
+        show: true,
+        title: '加分明细',
+        component: Main,
+        children: [
+            {
+                path: 'list',
+                title: '加分明细列表',
+                name: 'scoreDetail',
+                component: resolve => {
+                    require(['./jyc/scoreDetail/list.vue'], resolve);
+                }
+            }
+        ]
+    },
+    {
         path: '/staff',
         icon: 'android-folder',
         name: 'staff',

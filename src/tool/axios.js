@@ -34,6 +34,9 @@ export default function (config) {
         localStorage.removeItem('user');
         return Promise.reject(res);
       }
+      if (res) {
+          return Promise.resolve(res.data);
+      }
     }
   );
 }

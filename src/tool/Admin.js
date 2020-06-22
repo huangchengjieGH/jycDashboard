@@ -43,5 +43,27 @@ export default class Admin {
       err => Promise.reject(err)
     );
   }
+
+  ExportExcel(params) {
+    return Axios({
+      url:'/api/admin/points/export',
+      method:'get',
+      responseType: 'blob',
+      params
+    }).then(
+        res => Promise.resolve(res),
+        err => Promise.reject(err)
+    )
+  }
+  getPointList(params) {
+    return Axios({
+      url:'/api/admin/points/list',
+      method:'get',
+      params
+    }).then(
+        res => Promise.resolve(res),
+        err => Promise.reject(err)
+    )
+  }
 }
 
