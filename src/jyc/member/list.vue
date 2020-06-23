@@ -262,6 +262,10 @@
                         property: 'base'
                     },
                     {
+                        label:'会员ID',
+                        property:'id'
+                    },
+                    {
                         label: '头像',
                         img: 'headImgUrl'
                     },
