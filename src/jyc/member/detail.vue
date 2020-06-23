@@ -2,6 +2,15 @@
     <section class="plr-sm">
         <header class="y-center ptb-xs sticky">
             <span class="size-md bolder">积分详情</span>
+            <span style="margin:0 10px 0 20px">年份:</span>
+            <el-select v-model="yearValue" placeholder="请选择年份" @change='onYearChange'>
+                <el-option
+                        v-for="item in yearList"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                </el-option>
+            </el-select>
             <!--<el-button @click="prevShowEditModal()" class="mlr-sm" size="small" type="primary">新增分类</el-button>-->
         </header>
         <!--<my-table :data="classifyList" :config="tableConfig">-->
@@ -139,7 +148,7 @@
                 showEditModal: false,
                 classifyItem: {type: 1},
                 classifyList: [],
-                yearValue: '2019',
+                yearValue: '2020',
                 memberId: '',
                 operateStatus: 0,
                 tableConfig: [
@@ -156,6 +165,7 @@
                         type: 'operating'
                     }
                 ],
+                yearList:[2019,2020,2021],
                 member: {
                     'seasonBasePoints': 0.00,
                     'massesPoints': 0.00,
@@ -163,23 +173,23 @@
                 },
                 monthBasePoints: {
                     'memberId': '',
-                    'year': '2019',
+                    'year': '2020',
                     'month': '',
                     'points': 0
                 },
                 organizePoints: {
                     'memberId': '',
-                    'year': '2019',
+                    'year': '2020',
                     'points': 0
                 },
                 massesPoints: {
                     'memberId': '',
-                    'year': '2019',
+                    'year': '2020',
                     'points': 0
                 },
                 seasonBasePoints: {
                     'memberId': '',
-                    'year': '2019',
+                    'year': '2020',
                     'quarter': ''
                 },
                 options: [{
@@ -391,9 +401,14 @@
                 });
             },
             onYearChange(e) {
-                console.log(this.yearValue);
+
                 // this.getMonthBasePoints();
-                console.log(this.yearValue.getFullYear())
+
+                this.quarter = this.getQuarter();
+                this.getMonthBasePoints();
+                this.getOrganizePoints();
+                this.getMassesPoints();
+                this.getSeasonBasePoints();
             },
             prevShowEditModal() {
                 this.operateStatus = 0
