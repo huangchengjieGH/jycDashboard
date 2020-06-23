@@ -295,7 +295,7 @@
                 quarter: '',
                 year: '',
                 memberNum: 0,
-                dialogVisible:true,
+                dialogVisible:false,
                 tableData:[{memberMonthBasePointsList:[]}]
             }
         },
