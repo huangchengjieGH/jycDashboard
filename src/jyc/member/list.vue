@@ -8,6 +8,15 @@
             </el-select>
             <el-button @click="publishQuarterTap()" class="mlr-sm" size="small" type="primary">发布季度排行榜</el-button>
             <el-button @click="publishYearTap()" class="mlr-sm" size="small" type="primary">发布年度排行榜</el-button>
+            <el-upload
+                    class="upload-demo"
+                    action="/api/admin/points/import"
+                    :show-file-list="false"
+                    :on-success="onSuccess"
+                    >
+                <el-button size="small" type="success">导入积分</el-button>
+<!--                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+            </el-upload>
         </header>
         <my-table :data="memberList" :config="tableConfig" @on-name="onNameTap">
             <div slot="operating" slot-scope="member">
@@ -25,6 +34,7 @@
                     :total="memberNum">
             </el-pagination>
         </div>
+
         <!--编辑套餐-->
         <el-dialog
                 :append-to-body="true"
@@ -101,6 +111,130 @@
                 <el-button @click="commitMemberItem()" type="primary">保存</el-button>
             </div>
         </el-dialog>
+        <el-dialog
+                title="导入数据"
+                :visible.sync="dialogVisible"
+                width="70%"
+                custom-class="popup"
+                :modal="false"
+                :before-close="handleClose">
+            <el-table
+                    :data="tableData"
+                    stripe
+                    style="width: 100%">
+                <el-table-column
+                        prop="memberId"
+                        label="编号"
+                       >
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="姓名"
+                        >
+                </el-table-column>
+                <el-table-column
+                        prop="memberMassesPoints"
+                        label="组织评测分">
+                </el-table-column>
+                <el-table-column
+                        prop="memberOrganizePoints"
+                        label="群众评测分">
+                </el-table-column>
+                <el-table-column
+                        prop="year"
+                        label="年份"
+                >
+                </el-table-column>
+                <el-table-column
+                        label="1月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[0] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="2月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[1] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="3月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[2] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="4月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[3] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="5月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[4] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="6月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[5] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="7月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[6] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="8月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[7] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="9月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[8] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="10月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[9] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="11月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[10] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="12月"
+                >
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.memberMonthBasePointsList[11] }}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+         </span>
+        </el-dialog>
     </section>
 </template>
 
@@ -126,6 +260,10 @@
                         label: '序号',
                         index: 'rowIndex',
                         property: 'base'
+                    },
+                    {
+                        label:'会员ID',
+                        property:'id'
                     },
                     {
                         label: '头像',
@@ -160,7 +298,9 @@
                 operateStatus: 0,
                 quarter: '',
                 year: '',
-                memberNum: 0
+                memberNum: 0,
+                dialogVisible:false,
+                tableData:[{memberMonthBasePointsList:[]}]
             }
         },
 
@@ -174,6 +314,9 @@
         },
 
         methods: {
+            handleClose(){
+                this.dialogVisible = false;
+            },
             deleteMemberItem(obj, index) {
                 const that = this;
                 that.$Modal.confirm({
@@ -231,6 +374,15 @@
                         });
                     }
                 });
+            },
+            onSuccess(response, file, fileList) {
+                if (response.status === 1) {
+                    if (response.data.length > 0) {
+                        this.tableData = response.data;
+                        this.dialogVisible = true
+                    }
+                }
+
             },
             prevShowEditModal(obj = {}) {
                 obj.classify = obj.classify || {};
@@ -390,4 +542,7 @@
         display: block;
         object-fit: cover;
     }
+    /*.popup{*/
+    /*    margin-left: 20px;*/
+    /*}*/
 </style>

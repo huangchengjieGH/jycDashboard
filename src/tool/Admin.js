@@ -55,6 +55,16 @@ export default class Admin {
         err => Promise.reject(err)
     )
   }
+  importExcel(data) {
+    return Axios({
+      url:'/api/admin/points/import',
+      method:'post',
+      data
+    }).then(
+        res => Promise.resolve(res),
+        err => Promise.reject(err)
+    )
+  }
   getPointList(params) {
     return Axios({
       url:'/api/admin/points/list',
