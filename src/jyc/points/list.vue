@@ -44,6 +44,17 @@
                     <span class="plr-sm">积分</span>
                     <el-input type="number" v-model="pointsItem.points" class="w-5"></el-input>
                 </div>
+                <div class="edit-modal-item">
+                    <span class="plr-sm">部门</span>
+                    <el-select class="w-5" v-model="pointsItem.memberClassify.id" clearable  placeholder="请选择">
+                        <el-option
+                                v-for="item in branchList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </div>
             </div>
             <div slot="footer" class="text-center">
                 <el-button @click="commitPointsItem()" type="primary">保存</el-button>
@@ -55,6 +66,7 @@
 <script>
     import Points from '@/tool/classFactory/Points.js';
     import Classify from '@/tool/classFactory/Classify.js';
+    import Branch from '../../tool/classFactory/Branch';
     import myTable from '@/common/m-table.vue';
 
     export default {
@@ -66,7 +78,7 @@
                     pageSize: 10
                 },
                 showEditModal: false,
-                pointsItem: {classify: {}},
+                pointsItem: {classify: {},memberClassify:{}},
                 pointsList: [],
                 classifyList: [],
                 pointsNum: 0,
@@ -95,7 +107,8 @@
                         label: '操作',
                         type: 'operating'
                     }
-                ]
+                ],
+                branchList:[]
             }
         },
 
@@ -106,6 +119,7 @@
         activated() {
             this.getPointsList();
             this.getClassifyList();
+            this.getBranchList();
         },
 
         methods: {
@@ -139,7 +153,11 @@
             },
 
             prevShowEditModal(obj) {
-                this.pointsItem = obj || {classify: {}};
+                console.log(obj)
+                this.pointsItem = obj || {classify: {},memberClassify:{}};
+                if (!this.pointsItem.memberClassify){
+                    this.pointsItem.memberClassify = {}
+                }
                 this.showEditModal = true;
             },
 
@@ -158,7 +176,14 @@
                     that.pointsNum = res.data.extra.count || list.length;
                 });
             },
-
+            getBranchList() {
+                const that = this;
+                Branch.prototype.getList(that.search).then(res => {
+                    let list = res.data.data || [];
+                    that.branchList.splice(0, that.branchList.length, ...list);
+                    that.branchSum = res.data.extra.count || list.length;
+                });
+            },
             getClassifyList() {
                 const that = this;
                 Classify.prototype.getList().then(res => {

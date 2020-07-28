@@ -16,7 +16,8 @@ export default class Points {
             data: {
                 name: this.name,
                 classify: this.classify,
-                points: this.points
+                points: this.points,
+                memberClassify:this.memberClassify
             }
         }).then(
             res => Promise.resolve(res),
@@ -31,7 +32,8 @@ export default class Points {
             data: {
                 name: this.name,
                 classify: this.classify,
-                points: this.points
+                points: this.points,
+                memberClassify:this.memberClassify
             }
         }).then(
             res => Promise.resolve(res),
